@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multiple Image Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      align-items: flex-start;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      padding-top: 3px;
+    }
+    .dropbtn {
+      padding: 0;
+      line-height: 45px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container"> 
+    <div class="main-title">
+      <h1>🌿 Tea Leaf Disease Detection</h1>
+    </div>
+    <div class="content">
+      <div class="left-panel">
+        <div class="image-box">
+          <div class="loading" id="loading-spinner"></div>
+          <img id="preview" src="#" alt="Image will appear here" style="display: none;">
+        </div>
+
+        <div class="slider-buttons">
+          <button onclick="showPrevious()">← Prev</button>
+          <button onclick="showNext()">Next →</button>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="actionbtn">
+          <form id="upload-form" method="POST" enctype="multipart/form-data">
+            <label for="folder-upload" class="dropbtn">Upload Folder</label>
+            <input type="file" id="folder-upload" name="files" webkitdirectory directory multiple accept="image/*">
+            <button type="submit">Detect</button>
+          </form>
+        </div>
+        <div id="disease">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let imageFiles = [];
+    let currentIndex = 0;
+
+    const preview = document.getElementById("preview");
+    const input = document.getElementById("folder-upload");
+    const spinner = document.getElementById("loading-spinner");
+    const form = document.getElementById("upload-form");
+    const diseaseBox = document.getElementById("disease");
+
+    input.addEventListener("change", () => {
+      const files = Array.from(input.files).filter(file => file.type.startsWith("image/"));
+      if (files.length === 0) {
+        alert("No images found in the folder.");
+        return;
+      }
+
+      imageFiles = files.map(file => ({ file }));
+      currentIndex = 0;
+      showImage();
+    });
+
+    function showImage() {
+      if (imageFiles.length === 0) return;
+
+      const image = imageFiles[currentIndex];
+      diseaseBox.innerHTML = ""; // Clear previous info
+
+      if (image.src) {
+        preview.src = image.src;
+        preview.style.display = "block";
+
+        // Show description if available
+        if (image.description) {
+          diseaseBox.innerHTML = `
+            <h3>Total Spots: ${image.description.total_spots}</h3>
+            <ul>
+              ${image.description.detections.map(d => `<li>${d.class} (${d.confidence})</li>`).join("")}
+            </ul>
+          `;
+        }
+
+      } else if (image.file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          preview.src = reader.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(image.file);
+      }
+    }
+
+    function showNext() {
+      if (imageFiles.length === 0) return;
+      currentIndex = (currentIndex + 1) % imageFiles.length;
+      showImage();
+    }
+
+    function showPrevious() {
+      if (imageFiles.length === 0) return;
+      currentIndex = (currentIndex - 1 + imageFiles.length) % imageFiles.length;
+      showImage();
+    }
+
+    async function toBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    form.onsubmit = async function (event) {
+      event.preventDefault();
+
+      if (imageFiles.length === 0) {
+        alert("Please upload a folder with images first.");
+        return;
+      }
+
+      const formData = new FormData();
+      imageFiles.forEach(({ file }) => {
+        formData.append("files", file);
+      });
+
+      spinner.style.display = "block";
+
+      try {
+        const response = await fetch("/detect-folder", {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          const resultList = await response.json(); // array of { image, description }
+
+          imageFiles = await Promise.all(resultList.map(async (item, index) => {
+            const imgResp = await fetch(item.image);
+            const blob = await imgResp.blob();
+            const base64 = await toBase64(blob);
+
+            return {
+              src: base64,
+              name: `detected_${index + 1}.jpg`,
+              description: item.description
+            };
+          }));
+
+          currentIndex = 0;
+          showImage();
+        } else {
+          alert("Detection failed.");
+        }
+      } catch (error) {
+        alert("Error during detection.");
+      } finally {
+        spinner.style.display = "none";
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .container {
+          padding: 20px;
+          padding-top: 3px;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main-title">
+      <h1>🌿 Tea Leaf Disease Detection</h1>
+    </div>
+    <div class="Second-title">
+      <h1>Prediction History</h1>
+    </div>
+
+    <div class="predict">
+      {% for folder, images in history %}
+        <div class="folder">
+          <div class="folder-name">Folder: {{ folder }}</div>
+          <div class="img-grid">
+            {% for image in images %}
+              <img src="{{ url_for('send_detected_image', folder=folder, filename=image) }}" alt="Prediction Image">
+            {% endfor %}
+          </div>
+        </div>
+      {% else %}
+        <p>No prediction history found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

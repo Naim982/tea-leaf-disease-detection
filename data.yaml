@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 7
+names: ['Black Rot', 'Brown Blight', 'Healthy', 'Leaf Rust', 'Mosquito Bug', 'Red Spider Mite', 'White Scab']
+
+roboflow:
+  workspace: home-gpd4c
+  project: tea-leaf-jhtel
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/home-gpd4c/tea-leaf-jhtel/dataset/1

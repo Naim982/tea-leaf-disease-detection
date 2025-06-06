@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>About Diseases</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="main-title">
+      <h1>🌿 Tea Leaf Disease Detection</h1>
+    </div>
+    <div class="Second-title">
+      <h1>About Diseases</h1>
+    </div>
+    
+    <div class="grid">
+      <div class="card">
+        <img src="{{ url_for('static', filename='diseases/bb.jpg') }}" alt="Brown Blight">
+        <h2>Brown Blight</h2>
+        <p>Brown blight causes small, light-green spots on young leaves which later become blister-like lesions. It affects leaf development severely.</p>
+      </div>
+
+      <div class="card">
+        <img src="{{ url_for('static', filename='diseases/br.jpg') }}" alt="Black Rot">
+        <h2>Black Rot</h2>
+        <p>Black rot appears as irregular black patches on the leaf, usually starting from the edge. It is caused by fungi and spreads in humid conditions.</p>
+      </div>
+
+      <div class="card">
+        <img src="{{ url_for('static', filename='diseases/lr.jpg') }}" alt="Leaf Rust">
+        <h2>Leaf Rust</h2>
+        <p>Leaf rust creates small rust-colored pustules on the underside of leaves, reducing photosynthesis and weakening the plant.</p>
+      </div>
+
+      <div class="card">
+        <img src="{{ url_for('static', filename='diseases/mb.jpg') }}" alt="Mosquito Bug">
+        <h2>Mosquito Bug</h2>
+        <p>Mosquito bug causes dark patches covered with moss-like fungal growth. It thrives in wet, shaded environments.</p>
+      </div>
+
+      <div class="card">
+        <img src="{{ url_for('static', filename='diseases/rsm.jpg') }}" alt="Red Spider Mite">
+        <h2>Red Spider Mite</h2>
+        <p>This pest sucks sap from the leaves, leading to speckled yellowing. Infestation causes leaf drop and reduced yield.</p>
+      </div>
+
+      <div class="card">
+        <img src="{{ url_for('static', filename='diseases/ws.jpg') }}" alt="White Scab">
+        <h2>White Scab</h2>
+        <p>White scab appears as dry, scabby white spots on leaves. Severe cases can deform leaves and reduce plant growth.</p>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+</body>
+</html>

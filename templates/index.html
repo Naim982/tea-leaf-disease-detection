@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Disease Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="main-title">
+      <h1>🌿 Tea Leaf Disease Detection</h1>
+    </div>
+
+    <div class="nav">
+      <button onclick="location.href='/about'">About Disease</button>
+      <div class="dropdown">
+        <button class="dropbtn">Detection</button>
+        <div class="dropdown-content">
+          <a href="/single">Single Image</a>
+          <a href="/multiple">Multiple Images</a>
+        </div>
+      </div>
+      <button onclick="location.href='/history'">History</button>
+    </div>
+
+    <div class="model-info">
+      <h2>Model Info</h2>
+      <p><strong>Model:</strong> YOLOv8 Custom Trained</p>
+      <p><strong>Framework:</strong> Ultralytics YOLO</p>
+      <p><strong>Dataset:</strong> Tea Leaf Disease Dataset</p>
+      <p><strong>Class:</strong> 7 class (6 diease and healthy)</p>
+      <p><strong>Performance:</strong> <span>mAP = 98.2%</span></p>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2025 TLDD. All rights reserved.</p>
+    </div>
+  </div>
+  </div>
+</body>
+</html>
+
+<!-- 🧠  -->

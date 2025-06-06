@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Single Image Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      align-items: flex-start;
+    }
+    .container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      padding-top: 3px;
+    }
+    .dropbtn {
+      padding: 0;
+      line-height: 45px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main-title">
+      <h1>🌿 Tea Leaf Disease Detection</h1>
+    </div>
+
+    <div class="content">
+      <div class="image-box">
+        <div class="loading" id="loading-spinner"></div>
+        <img id="preview" src="#" alt="Image will appear here" style="display: none;">
+      </div>
+
+      <div class="right-panel">
+        <div class="actionbtn">
+          <form id="upload-form" method="POST" enctype="multipart/form-data">
+            <label for="file" class="dropbtn">Upload</label>
+            <input type="file" name="file" id="file" accept="image/*" required onchange="previewImage(event)">
+            <button type="submit">Detect</button>
+          </form>
+        </div>
+        <div id="disease"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentFile = null;
+    const spinner = document.getElementById("loading-spinner");
+
+    function previewImage(event) {
+      currentFile = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        const preview = document.getElementById('preview');
+        preview.src = reader.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(currentFile);
+    }
+
+    const form = document.getElementById("upload-form");
+    form.onsubmit = async function (event) {
+      event.preventDefault();
+      if (!currentFile) {
+        alert("Please upload an image first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", currentFile);
+
+      spinner.style.display = "block";
+
+      const response = await fetch("/detect-single", {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        document.getElementById("preview").src = result.image_path;
+
+          const diseaseDiv = document.querySelector("#disease");
+        diseaseDiv.innerHTML = `<strong>Total spot: <\strong>${result.total_spots}<br>`;
+        result.detections.forEach((item, index) => {
+          diseaseDiv.innerHTML += `${index + 1}. ${item.class} → ${item.confidence}<br>`;
+        });
+      } else {
+        alert("Detection failed.");   
+      }
+      spinner.style.display = "none";
+
+    };
+  </script>
+
+</body>
+</html>

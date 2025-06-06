@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Single Image Detection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    input[type="file"] {
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Upload a Leaf Image</h2>
+
+  <!-- Upload Form -->
+  <form id="upload-form" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+    <br>
+    <img id="preview" src="#" alt="Uploaded Image" style="display: none;">
+    <br>
+    <button type="submit">Detect</button>
+  </form>
+
+  <!-- Result Image -->
+  <div id="result-section" style="display:none;">
+    <h3>Detected Image:</h3>
+    <img id="result-image" src="#" alt="Detected Result">
+  </div>
+</div>
+
+<script>
+  // Show preview before submitting
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+      const preview = document.getElementById('preview');
+      preview.src = reader.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  // Intercept form submit to handle with JavaScript
+  const form = document.getElementById("upload-form");
+  form.onsubmit = async function(event) {
+    event.preventDefault();
+    const formData = new FormData(form);
+
+    const response = await fetch("/detect-single", {
+      method: "POST",
+      body: formData
+    });
+
+    if (response.ok) {
+      const imagePath = await response.text();
+      document.getElementById('result-section').style.display = 'block';
+      document.getElementById('result-image').src = imagePath;
+    } else {
+      alert("Detection failed.");
+    }
+  };
+</script>
+
+</body>
+</html>
