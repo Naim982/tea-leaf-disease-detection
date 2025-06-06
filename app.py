@@ -152,47 +152,6 @@ def history():
 
     return render_template("history.html", history=history)
 
-
-
-
-
-# @app.route('/uploads/<filename>')
-# def serve_upload(filename):
-#     return send_from_directory('uploads', filename)
-
-# @app.route('/runs/detect/<folder>/<filename>')
-# def serve_prediction(folder, filename):
-#     return send_from_directory(os.path.join('runs', 'detect', folder), filename)
-
-
-
-# @app.route('/history')
-# def history():
-#     upload_dir = 'uploads'
-#     detect_root = os.path.join('runs', 'detect')
-
-#     upload_files = sorted(os.listdir(upload_dir))
-    
-#     # Filter only folders like predict1, predict2, ...
-#     predict_dirs = sorted(
-#         [d for d in os.listdir(detect_root) if re.fullmatch(r'predict\d+', d)],
-#         key=lambda x: int(x.replace("predict", ""))
-#     )
-
-#     image_pairs = []
-
-#     for i, file in enumerate(upload_files):
-#         original = file
-#         if i < len(predict_dirs):
-#             prediction_folder = predict_dirs[i]
-#             prediction_file = file
-#             prediction_path = os.path.join(detect_root, prediction_folder, prediction_file)
-#             if os.path.exists(prediction_path):
-#                 image_pairs.append((original, (prediction_folder, prediction_file)))
-
-#     return render_template('history.html', image_pairs=image_pairs)
-
-
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Flask app exposing YOLOv8 models")
