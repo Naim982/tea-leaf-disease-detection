@@ -5,9 +5,6 @@ __pycache__/
 # Virtual environment
 venv/
 
-# YOLO weights
-best.pt
-
 # Uploads & results
 uploads/
 runs/
