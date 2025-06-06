@@ -1,0 +1,19 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# YOLO weights
+best.pt
+
+# Uploads & results
+uploads/
+runs/
+
+# System/Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
