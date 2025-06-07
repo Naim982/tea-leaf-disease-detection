@@ -26,17 +26,17 @@ def detect_single():
     if 'file' in request.files:
         f = request.files['file']
         file_extension = f.filename.rsplit('.', 1)[1].lower()
-        img_name = f.filename
+        # img_name = f.filename
 
         if file_extension in ['jpg', 'jpeg', 'png']:
             basepath = os.path.dirname(__file__)
             upload_folder = os.path.join(basepath, 'uploads', 'single')
             os.makedirs(upload_folder, exist_ok=True)
 
-            imgg_path = os.path.join(upload_folder, img_name)
-            best_path = os.path.join(basepath, best.pt)
-            print("Upload folder created:", os.path.exists(best_path))
-            print("\n\n")
+            # imgg_path = os.path.join(upload_folder, img_name)
+            # best_path = os.path.join(basepath, best.pt)
+            # print("Upload folder created:", os.path.exists(best_path))
+            # print("\n\n")
             
             timestamp = int(time.time() * 1000)
             new_filename = f"img_{timestamp}.{file_extension}"
@@ -47,37 +47,39 @@ def detect_single():
             frame = cv2.imencode('.jpg', img)[1].tobytes()
             image = Image.open(io.BytesIO(frame))
 
-            # yolo = YOLO('best.pt')
+            yolo = YOLO('best.pt')
+            results = yolo.predict(source=image_path, save=True, imgsz=640, device='cpu')
+
             # results = yolo.predict(image, save=True)
 
-            # detections = []
-            # r = results[0]
-            # for box in r.boxes:
-            #     cls_id = int(box.cls[0])
-            #     conf = float(box.conf[0])
-            #     class_name = yolo.names[cls_id]
-            #     detections.append({
-            #         "class": class_name,
-            #         "confidence": round(conf, 2)
-            #     })
+            detections = []
+            r = results[0]
+            for box in r.boxes:
+                cls_id = int(box.cls[0])
+                conf = float(box.conf[0])
+                class_name = yolo.names[cls_id]
+                detections.append({
+                    "class": class_name,
+                    "confidence": round(conf, 2)
+                })
 
-            # basepath = os.path.dirname(__file__)
-            # folder_path = os.path.join(basepath, 'runs', 'detect')
-            # subfolders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, f))]
+            basepath = os.path.dirname(__file__)
+            folder_path = os.path.join(basepath, 'runs', 'detect')
+            subfolders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, f))]
 
-            # if subfolders:
-            #     latest_subfolder = max(subfolders, key=lambda x: os.path.getctime(os.path.join(folder_path, x)))
-            #     latest_subfolder_path = os.path.join(folder_path, latest_subfolder)
-            #     files = [f for f in os.listdir(latest_subfolder_path) if os.path.isfile(os.path.join(latest_subfolder_path, f))]
-            #     if files:
-            #         latest_file = max(files, key=lambda x: os.path.getctime(os.path.join(latest_subfolder_path, x)))
-            #         image_path = os.path.join('runs', 'detect', latest_subfolder, latest_file)
-            #         return jsonify({
-            #             "image_path": image_path,
-            #             "total_spots": len(detections),
-            #             "detections": detections
-            #         })
-            return imgg_path
+            if subfolders:
+                latest_subfolder = max(subfolders, key=lambda x: os.path.getctime(os.path.join(folder_path, x)))
+                latest_subfolder_path = os.path.join(folder_path, latest_subfolder)
+                files = [f for f in os.listdir(latest_subfolder_path) if os.path.isfile(os.path.join(latest_subfolder_path, f))]
+                if files:
+                    latest_file = max(files, key=lambda x: os.path.getctime(os.path.join(latest_subfolder_path, x)))
+                    image_path = os.path.join('runs', 'detect', latest_subfolder, latest_file)
+                    return jsonify({
+                        "image_path": image_path,
+                        "total_spots": len(detections),
+                        "detections": detections
+                    })
+            # return imgg_path
 
     return "Detection failed", 500
 
