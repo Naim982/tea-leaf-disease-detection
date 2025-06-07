@@ -49,36 +49,37 @@ def detect_single():
             frame = cv2.imencode('.jpg', img)[1].tobytes()
             image = Image.open(io.BytesIO(frame))
 
-            yolo = YOLO('best.pt')
-            results = yolo.predict(image, save=True)
+            # yolo = YOLO('best.pt')
+            # results = yolo.predict(image, save=True)
 
-            detections = []
-            r = results[0]
-            for box in r.boxes:
-                cls_id = int(box.cls[0])
-                conf = float(box.conf[0])
-                class_name = yolo.names[cls_id]
-                detections.append({
-                    "class": class_name,
-                    "confidence": round(conf, 2)
-                })
+            # detections = []
+            # r = results[0]
+            # for box in r.boxes:
+            #     cls_id = int(box.cls[0])
+            #     conf = float(box.conf[0])
+            #     class_name = yolo.names[cls_id]
+            #     detections.append({
+            #         "class": class_name,
+            #         "confidence": round(conf, 2)
+            #     })
 
-            basepath = os.path.dirname(__file__)
-            folder_path = os.path.join(basepath, 'runs', 'detect')
-            subfolders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, f))]
+            # basepath = os.path.dirname(__file__)
+            # folder_path = os.path.join(basepath, 'runs', 'detect')
+            # subfolders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, f))]
 
-            if subfolders:
-                latest_subfolder = max(subfolders, key=lambda x: os.path.getctime(os.path.join(folder_path, x)))
-                latest_subfolder_path = os.path.join(folder_path, latest_subfolder)
-                files = [f for f in os.listdir(latest_subfolder_path) if os.path.isfile(os.path.join(latest_subfolder_path, f))]
-                if files:
-                    latest_file = max(files, key=lambda x: os.path.getctime(os.path.join(latest_subfolder_path, x)))
-                    image_path = os.path.join('runs', 'detect', latest_subfolder, latest_file)
-                    return jsonify({
-                        "image_path": image_path,
-                        "total_spots": len(detections),
-                        "detections": detections
-                    })
+            # if subfolders:
+            #     latest_subfolder = max(subfolders, key=lambda x: os.path.getctime(os.path.join(folder_path, x)))
+            #     latest_subfolder_path = os.path.join(folder_path, latest_subfolder)
+            #     files = [f for f in os.listdir(latest_subfolder_path) if os.path.isfile(os.path.join(latest_subfolder_path, f))]
+            #     if files:
+            #         latest_file = max(files, key=lambda x: os.path.getctime(os.path.join(latest_subfolder_path, x)))
+            #         image_path = os.path.join('runs', 'detect', latest_subfolder, latest_file)
+            #         return jsonify({
+            #             "image_path": image_path,
+            #             "total_spots": len(detections),
+            #             "detections": detections
+            #         })
+            return upload_path
 
     return "Detection failed", 500
 
