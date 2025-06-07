@@ -26,28 +26,22 @@ def detect_single():
     if 'file' in request.files:
         f = request.files['file']
         file_extension = f.filename.rsplit('.', 1)[1].lower()
+        img_name = f.filename
 
         if file_extension in ['jpg', 'jpeg', 'png']:
             basepath = os.path.dirname(__file__)
             upload_folder = os.path.join(basepath, 'uploads', 'single')
             os.makedirs(upload_folder, exist_ok=True)
 
-
-            try:
-                model = YOLO("best.pt")
-                print('okey')
-            except Exception as e:
-                print("Failed to load model:", e)
-
-            print("\n\nNaimur Rahman\n\n")
+            imgg_path = os.path.join(upload_folder, img_name)
+            best_path = os.path.join(basepath, best.pt)
+            print("Upload folder created:", os.path.exists(best_path))
+            print("\n\n")
             
             timestamp = int(time.time() * 1000)
             new_filename = f"img_{timestamp}.{file_extension}"
             upload_path = os.path.join(upload_folder, new_filename)
             f.save(upload_path)
-            print("Upload folder created:", os.path.exists(upload_folder))
-            print("\n\nUpload folder created:", os.path.exists(upload_folder))
-            print("\n\nokey")
 
             img = cv2.imread(upload_path)
             frame = cv2.imencode('.jpg', img)[1].tobytes()
@@ -83,7 +77,7 @@ def detect_single():
             #             "total_spots": len(detections),
             #             "detections": detections
             #         })
-            return upload_path
+            return imgg_path
 
     return "Detection failed", 500
 
