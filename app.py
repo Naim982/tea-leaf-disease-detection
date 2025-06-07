@@ -46,6 +46,8 @@ def detect_single():
             upload_path = os.path.join(upload_folder, new_filename)
             f.save(upload_path)
             print("Upload folder created:", os.path.exists(upload_folder))
+            print("\n\nUpload folder created:", os.path.exists(upload_folder))
+            print("\n\nokey")
 
             img = cv2.imread(upload_path)
             frame = cv2.imencode('.jpg', img)[1].tobytes()
