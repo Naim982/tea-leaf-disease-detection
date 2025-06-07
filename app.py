@@ -32,6 +32,14 @@ def detect_single():
             upload_folder = os.path.join(basepath, 'uploads', 'single')
             os.makedirs(upload_folder, exist_ok=True)
 
+
+            try:
+                model = YOLO("best.pt")
+            except Exception as e:
+                print("Failed to load model:", e)
+
+            print("\n\nNaimur Rahman\n\n")
+            
             timestamp = int(time.time() * 1000)
             new_filename = f"img_{timestamp}.{file_extension}"
             upload_path = os.path.join(upload_folder, new_filename)
