@@ -81,14 +81,14 @@
       });
 
       if (response.ok) {
-        const result = await response.text();
-        document.getElementById("preview").src = result;
+        const result = await response.json();
+        document.getElementById("preview").src = result.image_path;
 
-        //   const diseaseDiv = document.querySelector("#disease");
-        // diseaseDiv.innerHTML = `<strong>Total spot: <\strong>${result.total_spots}<br>`;
-        // result.detections.forEach((item, index) => {
-        //   diseaseDiv.innerHTML += `${index + 1}. ${item.class} → ${item.confidence}<br>`;
-        // });
+          const diseaseDiv = document.querySelector("#disease");
+        diseaseDiv.innerHTML = `<strong>Total spot: <\strong>${result.total_spots}<br>`;
+        result.detections.forEach((item, index) => {
+          diseaseDiv.innerHTML += `${index + 1}. ${item.class} → ${item.confidence}<br>`;
+        });
       } else {
         alert("Detection failed.");   
       }
