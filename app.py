@@ -71,16 +71,15 @@ def detect_single():
                 latest_subfolder = max(subfolders, key=lambda x: os.path.getctime(os.path.join(folder_path, x)))
                 latest_subfolder_path = os.path.join(folder_path, latest_subfolder)
                 imgg_path = os.path.join(latest_subfolder_path, image0.jpg)
-                # files = [f for f in os.listdir(latest_subfolder_path) if os.path.isfile(os.path.join(latest_subfolder_path, f))]
-                # if files:
-                #     latest_file = max(files, key=lambda x: os.path.getctime(os.path.join(latest_subfolder_path, x)))
-                #     image_path = os.path.join('runs', 'detect', latest_subfolder, latest_file)
-                #     return jsonify({
-                #         "image_path": image_path,
-                #         "total_spots": len(detections),
-                #         "detections": detections
-                #     })
-            return imgg_path
+                files = [f for f in os.listdir(latest_subfolder_path) if os.path.isfile(os.path.join(latest_subfolder_path, f))]
+                if files:
+                    latest_file = max(files, key=lambda x: os.path.getctime(os.path.join(latest_subfolder_path, x)))
+                    image_path = os.path.join('runs', 'detect', latest_subfolder, latest_file)
+                    return jsonify({
+                        "image_path": image_path,
+                        "total_spots": len(detections),
+                        "detections": detections
+                    })
 
     return "Detection failed", 500
 
