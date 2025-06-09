@@ -34,7 +34,7 @@ def detect_single():
             basepath = os.path.dirname(__file__)
             upload_folder = os.path.join(basepath, 'uploads', 'single')
             os.makedirs(upload_folder, exist_ok=True)
-            dtect_f = os.path.join(basepath, 'runs', 'detect')
+            detect_f = os.path.join(basepath, 'runs', 'detect','predict')
             os.makedirs(detect_f, exist_ok=True)
 
             timestamp = int(time.time() * 1000)
