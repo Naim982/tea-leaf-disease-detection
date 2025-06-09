@@ -21,6 +21,9 @@ def render_page():
         return render_template('index.html')
     return render_template(f"{path.strip('/')}.html")
 
+
+yolo = YOLO('best.pt')
+
 @app.route("/detect-single", methods=["POST"])
 def detect_single():
     if 'file' in request.files:
@@ -31,6 +34,8 @@ def detect_single():
             basepath = os.path.dirname(__file__)
             upload_folder = os.path.join(basepath, 'uploads', 'single')
             os.makedirs(upload_folder, exist_ok=True)
+            dtect_f = os.path.join(basepath, 'runs', 'detect')
+            os.makedirs(detect_f, exist_ok=True)
 
             timestamp = int(time.time() * 1000)
             new_filename = f"img_{timestamp}.{file_extension}"
@@ -41,8 +46,8 @@ def detect_single():
             frame = cv2.imencode('.jpg', img)[1].tobytes()
             image = Image.open(io.BytesIO(frame))
 
-            yolo = YOLO('best.pt')
-            results = yolo.predict(image, save=True)
+            # yolo = YOLO('best.pt')
+            results = yolo.predict(image, save=False)
 
             detections = []
             r = results[0]
@@ -85,7 +90,7 @@ def detect_folder():
     basepath = os.path.dirname(__file__)
     timestamp = int(time.time() * 1000)
     upload_folder = os.path.join(basepath, 'uploads', f'folder_{timestamp}')
-    os.makedirs(upload_folder, exist_ok=True)
+    os.makedirs(upload_folder, exist_ok=False)
 
     filenames = []
     for file in files:
@@ -94,7 +99,7 @@ def detect_folder():
         file.save(filepath)
         filenames.append(filename)
 
-    yolo = YOLO('best.pt')
+    # yolo = YOLO('best.pt')
     results = yolo.predict(upload_folder, save=True)
 
     result_descriptions = {}
